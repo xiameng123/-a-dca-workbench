@@ -68,7 +68,7 @@ section{padding:15px 14px 0}.section-head{display:flex;justify-content:space-bet
 </main>
 
 <main id="about" class="page"><section><div class="card"><div class="panel-title">评分说明</div><div class="why">价格分位 30%：当前价格越接近 5 年低位分越高。RSI 20%：日/周/月 RSI 越偏超卖分越高。均线偏离 20%：价格越低于中长期均线分越高。阶段回撤 20%：距离近一年高点越远分越高。月内价格通道 10%：越靠近近 20 个交易日低位分越高。总分 0—100，仅用于纪律化观察，不是买卖建议。</div></div></section></main>
-<div class="footer-note">数据源：A 股/ETF 主要使用东方财富公开行情接口；纳斯达克综合指数使用 Yahoo Finance 图表接口。财经资讯使用可在静态网页中读取的 RSS/JSONP 方式：中文财经使用已验证可在 GitHub Pages/Safari 读取的财经 RSS 聚合，Yahoo 国际财经使用官方 RSS，金十使用快讯脚本读取；点击新闻标题进入对应新闻页面。第三方源若临时不可用，页面会明确提示，不使用模拟新闻。买卖信号为基于当前评分与技术条件的规则化参考，不构成收益保证或个性化投资建议。市场有风险，投资需谨慎。</div>
+<div class="footer-note">数据源：A 股/ETF 主要使用东方财富公开行情接口；纳斯达克综合指数使用 Yahoo Finance 图表接口。财经资讯：中文财经读取新华网财经/金融 RSS，Yahoo 国际财经读取官方 RSS，金十读取快讯脚本；点击标题会在当前 Safari 页面直接打开该条原文。第三方源若临时不可用，页面会明确提示，不使用模拟新闻。买卖信号为基于当前评分与技术条件的规则化参考，不构成收益保证或个性化投资建议。市场有风险，投资需谨慎。</div>
 </main>
 </div>
 <nav class="nav"><button class="active" data-page="home"><i>⌂</i>工作台</button><button data-scroll="holdings"><i>▣</i>持仓</button><button data-page="calc"><i>↗</i>复利</button><button data-page="about"><i>?</i>说明</button></nav>
@@ -473,7 +473,123 @@ function drawChart(){
   const legend=$('#chartLegend');
   if(legend)legend.innerHTML=`<span><b class="buy-mark">B</b> = 买入区/强买区</span><span><b class="sell-mark">S</b> = 满足卖点确认</span><span>历史信号按当前规则回算</span>`;
 }
-function renderNews(type='cn'){const n=state.news[type]||[];if(n.length){$('#newsList').innerHTML=n.map(x=>`<div class="news-item"><a class="news-title" target="_blank" rel="noopener" href="${x.url}">${x.title}</a><div class="news-meta">${x.source}${x.time?' · '+fmtNewsTime(x.time):''} · 点击标题看原文</div></div>`).join('');return}const label=type==='cn'?'中文财经':type==='yahoo'?'Yahoo 国际财经':'金十数据';$('#newsList').innerHTML=`<div class="empty">${label}暂未返回数据，请稍后点“更新”重试。</div>`}
+
+const NEWS_FEEDS={
+  cn:[
+    'http://www.xinhuanet.com/finance/news_finance.xml',
+    'http://www.xinhuanet.com/fortune/news_fortune.xml'
+  ],
+  yahoo:[
+    'https://tw.stock.yahoo.com/rss?category=intl-markets'
+  ]
+};
+
+function safeNewsUrl(url){
+  try{
+    const u=new URL(url,location.href);
+    if(u.protocol==='http:'||u.protocol==='https:') return u.href;
+  }catch{}
+  return '';
+}
+
+function openNewsLink(url){
+  const u=safeNewsUrl(url);
+  if(!u){toast('这条新闻的原文链接无效');return}
+  // iPhone Safari / 主屏幕网页最稳定的方式：当前页直接跳到原文
+  window.location.assign(u);
+}
+
+function loadOneRSS(url,key){return new Promise(resolve=>{
+  const cb='rss_cb_'+key+'_'+Math.random().toString(36).slice(2)+'_'+Date.now();
+  const s=document.createElement('script');
+  let done=false;
+  const finish=(items=[])=>{
+    if(done)return;done=true;
+    try{delete window[cb]}catch{}
+    try{s.remove()}catch{}
+    resolve(items)
+  };
+  window[cb]=j=>{
+    try{
+      const items=(j&&j.status==='ok'?(j.items||[]):[]).map(it=>{
+        const link=safeNewsUrl(it.link||'');
+        return {
+          title:it.title||'未命名资讯',
+          time:it.pubDate||'',
+          url:link,
+          source:key==='yahoo'?'Yahoo 股市':'新华财经'
+        };
+      }).filter(x=>x.url);
+      finish(items);
+    }catch{finish([])}
+  };
+  s.src='https://api.rss2json.com/v1/api.json?callback='+encodeURIComponent(cb)+'&rss_url='+encodeURIComponent(url)+'&_='+Date.now();
+  s.onerror=()=>finish([]);
+  document.head.appendChild(s);
+  setTimeout(()=>finish([]),9000);
+})}
+
+async function loadRSSNews(key){
+  const feeds=NEWS_FEEDS[key]||[];
+  const groups=await Promise.all(feeds.map(u=>loadOneRSS(u,key)));
+  const merged=groups.flat().sort((a,b)=>new Date(b.time)-new Date(a.time));
+  const seen=new Set();
+  state.news[key]=merged.filter(x=>{
+    const k=x.url||x.title;
+    if(seen.has(k))return false;
+    seen.add(k);return true
+  }).slice(0,12);
+}
+
+function loadJin10(){return new Promise(resolve=>{
+  const old=document.getElementById('jin10-script');
+  if(old)old.remove();
+  const s=document.createElement('script');
+  s.id='jin10-script';
+  let finished=false;
+  const finish=()=>{if(finished)return;finished=true;resolve()};
+  s.src='https://www.jin10.com/flash_newest.js?t='+Date.now();
+  s.onload=()=>{
+    try{
+      const arr=window.newest||[];
+      state.news.jin10=arr.slice(0,12).map(x=>{
+        const id=x.id||x.data?.id||'';
+        const content=(x.data?.content||x.content||'金十快讯').replace(/<[^>]+>/g,'');
+        return {
+          title:content,
+          time:x.time||x.data?.time||'',
+          url:id?'https://flash.jin10.com/detail/'+id:'https://flash.jin10.com/',
+          source:'金十数据'
+        }
+      }).filter(x=>safeNewsUrl(x.url));
+    }catch{}
+    finish()
+  };
+  s.onerror=finish;
+  document.head.appendChild(s);
+  setTimeout(finish,8000);
+})}
+
+function fmtNewsTime(v){
+  if(!v)return '';
+  const d=new Date(String(v).replace(' ','T'));
+  return isNaN(d)?v:d.toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+}
+
+function renderNews(type='cn'){
+  const n=state.news[type]||[];
+  if(n.length){
+    $('#newsList').innerHTML=n.map((x,i)=>`
+      <div class="news-item">
+        <button class="news-title" type="button" data-news-url="${encodeURIComponent(x.url)}" style="display:block;width:100%;padding:0;border:0;background:none;text-align:left;font:inherit;color:inherit;font-weight:750;line-height:1.45;cursor:pointer">${x.title}</button>
+        <div class="news-meta">${x.source}${x.time?' · '+fmtNewsTime(x.time):''} · 点标题直接看原文</div>
+      </div>`).join('');
+    $$('#newsList [data-news-url]').forEach(btn=>btn.onclick=()=>openNewsLink(decodeURIComponent(btn.dataset.newsUrl)));
+    return;
+  }
+  const label=type==='cn'?'中文财经':type==='yahoo'?'Yahoo 国际财经':'金十数据';
+  $('#newsList').innerHTML=`<div class="empty">${label}暂未返回数据，请点“更新”重试。</div>`;
+}
 function calc(){const p=+$('#principal').value||0,m=+$('#monthly').value||0,annual=(+$('#rate').value||0)/100,rm=Math.pow(1+annual,1/12)-1;$('#calcResults').innerHTML=[10,15,20].map(y=>{const n=y*12,total=p*Math.pow(1+rm,n)+(rm?m*(Math.pow(1+rm,n)-1)/rm:m*n),principal=p+m*n,gain=total-principal;return `<div class="result"><div class="yr">${y} 年</div><div class="money">¥${Math.round(total).toLocaleString()}</div><div class="gain">本金 ¥${Math.round(principal).toLocaleString()}<br>收益 ¥${Math.round(gain).toLocaleString()}</div></div>`}).join('')}
 async function refresh(){
   const btn=$('#refreshBtn');
