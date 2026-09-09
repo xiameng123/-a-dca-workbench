@@ -19,6 +19,21 @@ section{padding:15px 14px 0}.section-head{display:flex;justify-content:space-bet
 .tabs{display:flex;gap:8px;margin-bottom:10px;overflow:auto}.tab{border:0;background:#eaf2ff;color:#4871ad;padding:8px 12px;border-radius:999px;font-weight:700;white-space:nowrap}.tab.active{background:var(--blue);color:white}.chart-wrap{height:185px}.chart-wrap canvas{width:100%;height:100%}.news-item{padding:11px 0;border-bottom:1px solid var(--line)}.news-item:last-child{border-bottom:0}.news-title{font-size:13px;line-height:1.45;font-weight:750;color:var(--ink);text-decoration:none}.news-meta{font-size:10px;color:var(--muted);margin-top:5px}.empty{font-size:12px;color:var(--muted);padding:12px 0}.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.field label{font-size:11px;color:var(--muted);display:block;margin-bottom:5px}.field input{width:100%;padding:10px;border:1px solid #dce5f4;border-radius:10px;background:#fbfdff}.calc-result{margin-top:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.result{background:#f5f9ff;border-radius:12px;padding:10px}.result .yr{font-size:11px;color:var(--muted)}.result .money{font-size:13px;font-weight:850;margin-top:5px}.result .gain{font-size:10px;color:var(--blue);margin-top:3px}.footer-note{font-size:10px;line-height:1.55;color:#8a97ad;padding:16px 18px 0}.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(680px,100%);display:grid;grid-template-columns:repeat(4,1fr);background:rgba(255,255,255,.96);border-top:1px solid var(--line);padding:8px 6px calc(8px + env(safe-area-inset-bottom));backdrop-filter:blur(16px);z-index:9}.nav button{border:0;background:none;color:#73819d;font-size:10px;font-weight:700;padding:5px}.nav button.active{color:var(--blue)}.nav i{display:block;font-style:normal;font-size:19px;margin-bottom:2px}.page{display:none}.page.active{display:block}.loading{animation:pulse 1.3s infinite}@keyframes pulse{50%{opacity:.45}}.toast{position:fixed;left:50%;bottom:82px;transform:translateX(-50%);background:#0d1b36;color:#fff;padding:9px 13px;border-radius:10px;font-size:11px;opacity:0;pointer-events:none;transition:.25s;z-index:30}.toast.show{opacity:1}
 .diag-box{display:none;margin:-6px 0 14px;background:#fff;border:1px solid #dce8fb;border-radius:16px;padding:12px 14px;box-shadow:0 6px 18px rgba(43,91,170,.05)}
 .diag-box.show{display:block}.diag-title{font-size:12px;font-weight:800;color:#274c83;margin-bottom:7px}.diag-item{font-size:11px;line-height:1.55;color:#667792;padding:7px 0;border-top:1px solid #edf2fa}.diag-item:first-of-type{border-top:0}.diag-item b{color:#173a6a}.diag-ok{color:#33805c}
+
+.score-details{grid-column:1/-1;margin-top:12px;border-top:1px dashed #dfe7f5;padding-top:12px}
+.detail-toggle{width:100%;border:0;background:#edf4ff;color:#3a6db8;border-radius:12px;padding:9px 12px;font-size:11px;font-weight:800;margin-bottom:8px}
+.detail-body{display:block}.detail-body.collapsed{display:none}
+.metric{padding:10px 0;border-bottom:1px solid #edf2fa}.metric:last-child{border-bottom:0}
+.metric-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:12px;font-weight:800}
+.metric-head .weight{font-size:10px;color:#8a97ad;font-weight:700;margin-left:5px}
+.metric-score{font-size:14px;color:var(--blue);font-weight:900}
+.metric-bar{height:6px;background:#eef3fb;border-radius:999px;overflow:hidden;margin:7px 0 5px}
+.metric-bar span{display:block;height:100%;background:linear-gradient(90deg,#9fc5ff,#0b66ff);border-radius:999px}
+.metric-desc{font-size:10.5px;line-height:1.55;color:#74819a}
+.plain-box{margin-top:12px;background:#f3f7ff;border-radius:14px;padding:12px}
+.plain-title{font-size:12px;font-weight:900;color:#315f9f;margin-bottom:7px}
+.plain-line{font-size:11px;line-height:1.65;color:#53627f;margin:4px 0}
+
 </style>
 </head>
 <body>
@@ -75,7 +90,9 @@ function scoreAt(rows,idx){const s=rows.slice(0,idx+1), closes=s.map(x=>x.close)
  const y=closes.slice(-252), high=Math.max(...y), dd=(high-p)/high, ddCheap=clamp(dd/.35*100), ddPts=ddCheap*.20;
  const m20=closes.slice(-20), lo=Math.min(...m20), hi=Math.max(...m20), loc=hi===lo?.5:(p-lo)/(hi-lo), channelCheap=(1-loc)*100, channelPts=channelCheap*.10;
  const total=clamp(pricePts+rsiPts+maPts+ddPts+channelPts);
- return {total,parts:{price:pricePts/30*100,rsi:rsiCheap,ma:maCheap,drawdown:ddCheap,channel:channelCheap},raw:{dr,wr,mr,dd,percentile,loc,maDev:mas.length?avg(mas.map(m=>(p-m)/m)):NaN}}}
+ const ma20=sma(closes,20),ma60=sma(closes,60),ma200=sma(closes,200);
+ const lookLow=Math.min(...look5),lookHigh=Math.max(...look5);
+ return {total,parts:{price:pricePts/30*100,rsi:rsiCheap,ma:maCheap,drawdown:ddCheap,channel:channelCheap},raw:{dr,wr,mr,dd,percentile,loc,maDev:mas.length?avg(mas.map(m=>(p-m)/m)):NaN,ma20,ma60,ma200,lookLow,lookHigh,yearHigh:high,monthLow:lo,monthHigh:hi,current:p}}}
 function computeMonthRank(rows){const last=rows.at(-1);if(!last)return null;const ym=last.date.slice(0,7);const vals=[];for(let i=0;i<rows.length;i++)if(rows[i].date.startsWith(ym)){const s=scoreAt(rows,i);if(s)vals.push({date:rows[i].date,score:s.total})}if(!vals.length)return null;const current=vals.at(-1).score;const rank=[...vals].sort((a,b)=>b.score-a.score).findIndex(x=>x.date===vals.at(-1).date)+1;return {rank,total:vals.length,current}}
 function verdict(s){if(s>=80)return '回调很充分，可重点观察';if(s>=65)return '偏便宜，适合分批关注';if(s>=50)return '中性区域，不追也不怕';if(s>=35)return '略偏贵，定投可放慢';return '相对偏贵，别急着追'}
 function explain(o){const p=o.parts,r=o.raw;const bits=[];if(p.price>70)bits.push('价格在历史区间偏低');else if(p.price<30)bits.push('价格分位偏高');if(p.rsi>70)bits.push('RSI 已明显降温');else if(p.rsi<30)bits.push('短中期动能仍偏热');if(p.ma>65)bits.push('价格低于/接近主要均线');else if(p.ma<35)bits.push('价格仍高于主要均线');if(p.drawdown>65)bits.push('距离阶段高点已有明显回撤');else if(p.drawdown<30)bits.push('离近一年高点不远');if(p.channel>70)bits.push('本月位置靠近低位');return bits.slice(0,3).join('，')+'。'}
@@ -210,9 +227,104 @@ async function loadAsset(a){
     throw err
   }
 }
-function renderAssets(){const vals=Object.values(state.assets).sort((a,b)=>(b.score?.total||-1)-(a.score?.total||-1));if(!vals.length){$('#assetList').innerHTML='<div class="card">暂时没有可用行情。</div>';return}$('#assetList').innerHTML=vals.map(a=>{const s=a.score, cls=a.pct>0?'up':a.pct<0?'down':'flat', historyDays=a.rows.length, warn=historyDays<1100?`<div class="historywarn">该品种上市/可用历史不足 5 年，当前按 ${historyDays} 个交易日真实历史计算。</div>`:'';return `<article class="card asset"><div class="asset-main"><div class="name">${a.name}<span class="code">${a.code}</span></div><div class="price">${a.last.close.toFixed(a.last.close>100?2:3)} <span class="pct ${cls}">${a.pct>=0?'+':''}${a.pct.toFixed(2)}%</span></div><div class="meta">${marketLabel(a,a.last.date)} · ${a.last.date}${a.fromCache?' · 使用上次成功缓存':''} · 页面 ${new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})} 更新</div><div class="bar"><span style="width:${s.total.toFixed(0)}%"></span></div><div class="verdict">${verdict(s.total)}</div><div class="why">${explain(s)}</div><div class="chips"><span class="chip">价格 <b>${s.parts.price.toFixed(0)}</b></span><span class="chip">RSI <b>${s.parts.rsi.toFixed(0)}</b></span><span class="chip">均线 <b>${s.parts.ma.toFixed(0)}</b></span><span class="chip">回撤 <b>${s.parts.drawdown.toFixed(0)}</b></span><span class="chip">月通道 <b>${s.parts.channel.toFixed(0)}</b></span></div>${warn}</div><div class="scorebox"><div class="score">${s.total.toFixed(0)}</div><div class="scorelab">今日评分 / 100</div><div class="rank">本月第 ${a.rank?.rank||'-'} 便宜</div></div></article>`}).join('')}
-function defaultHoldings(){return Object.fromEntries(ASSETS.filter(x=>!['star50','sh'].includes(x.id)).map(a=>[a.id,{units:0,cost:0}]))}
-function loadHoldings(){try{return {...defaultHoldings(),...JSON.parse(localStorage.getItem('a-dca-holdings')||'{}')}}catch{return defaultHoldings()}}
+
+function fmtPx(v){if(!Number.isFinite(v))return '-';return v>=100?v.toFixed(2):v.toFixed(3)}
+function metricDetail(a){
+  const s=a.score,r=s.raw,p=s.parts,days=a.rows.length;
+  const years=Math.max(1,Math.round(days/252*10)/10);
+  const maBase=Number.isFinite(r.ma200)?r.ma200:(Number.isFinite(r.ma60)?r.ma60:r.ma20);
+  const maDev=Number.isFinite(maBase)?(r.current-maBase)/maBase*100:NaN;
+  return [
+    {
+      key:'价格分位',weight:'30%',score:p.price,
+      desc:`现价 ${fmtPx(r.current)} 处在近${years}年（${fmtPx(r.lookLow)} ～ ${fmtPx(r.lookHigh)}）区间的第 ${(r.percentile*100).toFixed(1)}% 位。越靠近区间低位，得分越高。`
+    },
+    {
+      key:'日/周/月 RSI',weight:'20%',score:p.rsi,
+      desc:`日线 ${Number.isFinite(r.dr)?r.dr.toFixed(1):'-'} · 周线 ${Number.isFinite(r.wr)?r.wr.toFixed(1):'-'} · 月线 ${Number.isFinite(r.mr)?r.mr.toFixed(1):'-'}。RSI 越低，代表短中长期热度越低，便宜分越高。`
+    },
+    {
+      key:'均线偏离',weight:'20%',score:p.ma,
+      desc:`${Number.isFinite(maBase)?`参考均线 ${fmtPx(maBase)}，现价偏离 ${maDev>=0?'+':''}${maDev.toFixed(1)}%。`:'均线样本不足。'} 价格越低于中长期均线，得分越高。`
+    },
+    {
+      key:'阶段回撤',weight:'20%',score:p.drawdown,
+      desc:`近1年最高点 ${fmtPx(r.yearHigh)}，当前已回撤 ${(r.dd*100).toFixed(1)}%。回撤越深，代表前期涨幅释放得越充分。`
+    },
+    {
+      key:'本月价格位置',weight:'10%',score:p.channel,
+      desc:`近20个交易日区间 ${fmtPx(r.monthLow)} ～ ${fmtPx(r.monthHigh)}，现价位于区间 ${(r.loc*100).toFixed(1)}% 的位置。越靠近区间低位，得分越高。`
+    }
+  ]
+}
+function plainTalk(a){
+  const s=a.score,p=s.parts,r=s.raw;
+  const lines=[];
+  if(p.price>=75) lines.push(`价格分位：现在已经处在历史区间比较低的位置，单看价格不算贵。`);
+  else if(p.price<=30) lines.push(`价格分位：目前仍在历史区间偏高的位置，价格本身没有明显优势。`);
+  else lines.push(`价格分位：目前在历史区间中部，价格不算特别便宜，也不算特别贵。`);
+
+  if(p.rsi>=70) lines.push(`RSI：日/周/月整体已经明显降温，短中期情绪偏冷。`);
+  else if(p.rsi<=30) lines.push(`RSI：短中期热度仍然偏高，追涨性价比一般。`);
+  else lines.push(`RSI：短中期情绪处在中性区域，没有明显过热，也没有明显超卖。`);
+
+  if(p.ma>=70) lines.push(`均线：现价相对主要均线偏低，趋势偏弱，但从定投角度看价格压力释放较多。`);
+  else if(p.ma<=30) lines.push(`均线：现价仍明显高于主要均线，趋势强，但价格安全垫相对少。`);
+  else lines.push(`均线：现价和主要均线距离不大，趋势和估值处在相对均衡状态。`);
+
+  if(p.drawdown>=70) lines.push(`回撤：距离近一年高点已经回落较多，前期涨幅释放得比较充分。`);
+  else if(p.drawdown<=30) lines.push(`回撤：距离近一年高点还不远，回调幅度暂时不算大。`);
+  else lines.push(`回撤：已经有一定回落，但还没有到非常深的回撤区。`);
+
+  if(p.channel>=70) lines.push(`本月位置：现在靠近近20个交易日低位，本月内相对更便宜。`);
+  else if(p.channel<=30) lines.push(`本月位置：现在靠近近20个交易日高位，本月内不算便宜。`);
+  else lines.push(`本月位置：目前处在近20个交易日中间区域。`);
+
+  lines.push(`综合来看：${verdict(s.total)}。总分 ${s.total.toFixed(0)} / 100，分数越高代表回调越充分。`);
+  return lines;
+}
+function detailHtml(a){
+  const metrics=metricDetail(a);
+  return `<div class="score-details">
+    <button class="detail-toggle" type="button" onclick="this.nextElementSibling.classList.toggle('collapsed');this.textContent=this.nextElementSibling.classList.contains('collapsed')?'展开明细 ▾':'收起明细 ▴'">收起明细 ▴</button>
+    <div class="detail-body">
+      ${metrics.map(m=>`<div class="metric">
+        <div class="metric-head"><div>${m.key}<span class="weight">权重${m.weight}</span></div><div class="metric-score">${m.score.toFixed(0)}</div></div>
+        <div class="metric-bar"><span style="width:${m.score.toFixed(0)}%"></span></div>
+        <div class="metric-desc">${m.desc}</div>
+      </div>`).join('')}
+      <div class="plain-box">
+        <div class="plain-title">🐰 大白话解读</div>
+        ${plainTalk(a).map(x=>`<div class="plain-line">• ${x}</div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderAssets(){
+  const vals=Object.values(state.assets).sort((a,b)=>(b.score?.total||-1)-(a.score?.total||-1));
+  if(!vals.length){$('#assetList').innerHTML='<div class="card">暂时没有可用行情。</div>';return}
+  $('#assetList').innerHTML=vals.map(a=>{
+    const s=a.score,cls=a.pct>0?'up':a.pct<0?'down':'flat',historyDays=a.rows.length;
+    const warn=historyDays<1100?`<div class="historywarn">该品种上市/可用历史不足 5 年，当前按 ${historyDays} 个交易日真实历史计算。</div>`:'';
+    return `<article class="card asset">
+      <div class="asset-main">
+        <div class="name">${a.name}<span class="code">${a.code}</span></div>
+        <div class="price">${a.last.close.toFixed(a.last.close>100?2:3)} <span class="pct ${cls}">${a.pct>=0?'+':''}${a.pct.toFixed(2)}%</span></div>
+        <div class="meta">${marketLabel(a,a.last.date)} · ${a.last.date}${a.fromCache?' · 使用上次成功缓存':''} · 页面 ${new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})} 更新</div>
+        <div class="bar"><span style="width:${s.total.toFixed(0)}%"></span></div>
+        <div class="verdict">${verdict(s.total)}</div>
+        ${warn}
+      </div>
+      <div class="scorebox">
+        <div class="score">${s.total.toFixed(0)}</div>
+        <div class="scorelab">今日评分 / 100</div>
+        <div class="rank">本月第 ${a.rank?.rank||'-'} 便宜</div>
+      </div>
+      ${detailHtml(a)}
+    </article>`
+  }).join('')
+}
 function renderHoldings(){const h=loadHoldings(), ids=Object.keys(h);let value=0,costAll=0;const rows=ids.map(id=>{const a=ASSETS.find(x=>x.id===id), q=state.assets[id]?.last?.close||0, v=h[id].units*q,c=h[id].units*h[id].cost;value+=v;costAll+=c;return `<div class="hold-row"><div><b>${a?.name||id}</b><div class="meta">现价 ${q? q.toFixed(q>100?2:3):'--'}</div></div><input inputmode="decimal" data-hold="${id}" data-k="units" value="${h[id].units}" placeholder="份额"><input inputmode="decimal" data-hold="${id}" data-k="cost" value="${h[id].cost}" placeholder="成本价"></div>`}).join('');const pnl=value-costAll;$('#holdings').innerHTML=`<div class="hold-row" style="font-size:10px;color:var(--muted);padding-top:0"><span>品种</span><span>持有份额</span><span>成本价</span></div>${rows}<div class="hold-sum"><span>持仓市值 <strong>¥${value.toLocaleString('zh-CN',{maximumFractionDigits:0})}</strong></span><span class="${pnl>=0?'up':'down'}">浮动 ${pnl>=0?'+':''}¥${pnl.toLocaleString('zh-CN',{maximumFractionDigits:0})}</span></div>`;$$('[data-hold]').forEach(el=>el.addEventListener('change',()=>{const hh=loadHoldings();hh[el.dataset.hold][el.dataset.k]=Math.max(0,+el.value||0);localStorage.setItem('a-dca-holdings',JSON.stringify(hh));renderHoldings()}))}
 function renderChartTabs(){const have=ASSETS.filter(a=>state.assets[a.id]);$('#chartTabs').innerHTML=have.map(a=>`<button class="tab ${a.id===state.chart?'active':''}" data-chart="${a.id}">${a.name.replace('指数','').replace('ETF','')}</button>`).join('');$$('[data-chart]').forEach(b=>b.onclick=()=>{state.chart=b.dataset.chart;renderChartTabs();drawChart()})}
 function drawChart(){const a=state.assets[state.chart];if(!a)return;const c=$('#trendChart'),dpr=window.devicePixelRatio||1,rect=c.getBoundingClientRect();c.width=rect.width*dpr;c.height=rect.height*dpr;const x=c.getContext('2d');x.scale(dpr,dpr);const rows=a.rows.slice(-252), vals=rows.map(r=>r.close),min=Math.min(...vals),max=Math.max(...vals),pad=12,w=rect.width,h=rect.height;x.clearRect(0,0,w,h);x.strokeStyle='#dce8fb';x.lineWidth=1;for(let i=1;i<4;i++){x.beginPath();x.moveTo(0,h*i/4);x.lineTo(w,h*i/4);x.stroke()}x.strokeStyle='#0b66ff';x.lineWidth=2;x.beginPath();vals.forEach((v,i)=>{const px=pad+(w-pad*2)*i/(vals.length-1),py=pad+(h-pad*2)*(1-(v-min)/(max-min||1));i?x.lineTo(px,py):x.moveTo(px,py)});x.stroke();x.fillStyle='#70809f';x.font='10px sans-serif';x.fillText(max.toFixed(max>100?0:2),4,11);x.fillText(min.toFixed(min>100?0:2),4,h-4)}
