@@ -17,17 +17,23 @@
 section{padding:15px 14px 0}.section-head{display:flex;justify-content:space-between;align-items:center;margin:1px 2px 10px}.section-head h2{font-size:16px;margin:0}.hint{font-size:11px;color:var(--muted)}.grid{display:grid;gap:10px}.card{background:var(--card);border:1px solid var(--line);box-shadow:0 7px 22px rgba(43,91,170,.06);border-radius:18px;padding:14px}.asset{display:grid;grid-template-columns:1fr auto;gap:10px}.asset-main{min-width:0}.name{font-weight:800;font-size:15px}.code{font-size:11px;color:var(--muted);margin-left:5px}.price{font-size:21px;font-weight:900;margin-top:7px}.pct{font-size:13px;font-weight:700;margin-left:8px}.up{color:var(--red)}.down{color:var(--green)}.flat{color:var(--muted)}.meta{font-size:11px;color:var(--muted);margin-top:4px}.scorebox{text-align:center;min-width:74px}.score{font-size:29px;font-weight:950;color:var(--blue);line-height:1}.scorelab{font-size:10px;color:var(--muted);margin-top:4px}.rank{font-size:11px;margin-top:7px;background:var(--blue2);color:var(--blue);border-radius:999px;padding:4px 7px}.bar{height:7px;background:#edf2fa;border-radius:999px;overflow:hidden;margin-top:11px}.bar span{display:block;height:100%;background:linear-gradient(90deg,#9fc5ff,#0b66ff);border-radius:inherit}.verdict{font-size:13px;font-weight:800;margin-top:10px}.why{font-size:12px;color:#53627f;line-height:1.55;margin-top:4px}.chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}.chip{font-size:10px;padding:5px 7px;border-radius:8px;background:#f3f6fc;color:#5e6c86}.chip b{color:#24395f}.historywarn{font-size:10px;color:#9a6a00;background:#fff7dc;border-radius:8px;padding:6px 8px;margin-top:8px}
 .panel-title{font-weight:850;font-size:14px;margin-bottom:10px}.hold-row{display:grid;grid-template-columns:1.1fr .75fr .75fr;gap:7px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}.hold-row:last-child{border-bottom:0}.hold-row input{width:100%;border:1px solid #dbe4f3;background:#f9fbff;border-radius:9px;padding:8px;font-size:12px}.hold-sum{display:flex;justify-content:space-between;padding-top:12px;font-size:12px}.hold-sum strong{font-size:15px}
 .tabs{display:flex;gap:8px;margin-bottom:10px;overflow:auto}.tab{border:0;background:#eaf2ff;color:#4871ad;padding:8px 12px;border-radius:999px;font-weight:700;white-space:nowrap}.tab.active{background:var(--blue);color:white}.chart-wrap{height:185px}.chart-wrap canvas{width:100%;height:100%}.news-item{padding:11px 0;border-bottom:1px solid var(--line)}.news-item:last-child{border-bottom:0}.news-title{font-size:13px;line-height:1.45;font-weight:750;color:var(--ink);text-decoration:none}.news-meta{font-size:10px;color:var(--muted);margin-top:5px}.empty{font-size:12px;color:var(--muted);padding:12px 0}.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.field label{font-size:11px;color:var(--muted);display:block;margin-bottom:5px}.field input{width:100%;padding:10px;border:1px solid #dce5f4;border-radius:10px;background:#fbfdff}.calc-result{margin-top:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.result{background:#f5f9ff;border-radius:12px;padding:10px}.result .yr{font-size:11px;color:var(--muted)}.result .money{font-size:13px;font-weight:850;margin-top:5px}.result .gain{font-size:10px;color:var(--blue);margin-top:3px}.footer-note{font-size:10px;line-height:1.55;color:#8a97ad;padding:16px 18px 0}.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(680px,100%);display:grid;grid-template-columns:repeat(4,1fr);background:rgba(255,255,255,.96);border-top:1px solid var(--line);padding:8px 6px calc(8px + env(safe-area-inset-bottom));backdrop-filter:blur(16px);z-index:9}.nav button{border:0;background:none;color:#73819d;font-size:10px;font-weight:700;padding:5px}.nav button.active{color:var(--blue)}.nav i{display:block;font-style:normal;font-size:19px;margin-bottom:2px}.page{display:none}.page.active{display:block}.loading{animation:pulse 1.3s infinite}@keyframes pulse{50%{opacity:.45}}.toast{position:fixed;left:50%;bottom:82px;transform:translateX(-50%);background:#0d1b36;color:#fff;padding:9px 13px;border-radius:10px;font-size:11px;opacity:0;pointer-events:none;transition:.25s;z-index:30}.toast.show{opacity:1}
+.diag-box{display:none;margin:-6px 0 14px;background:#fff;border:1px solid #dce8fb;border-radius:16px;padding:12px 14px;box-shadow:0 6px 18px rgba(43,91,170,.05)}
+.diag-box.show{display:block}.diag-title{font-size:12px;font-weight:800;color:#274c83;margin-bottom:7px}.diag-item{font-size:11px;line-height:1.55;color:#667792;padding:7px 0;border-top:1px solid #edf2fa}.diag-item:first-of-type{border-top:0}.diag-item b{color:#173a6a}.diag-ok{color:#33805c}
 </style>
 </head>
 <body>
 <div class="app">
 <header class="hero"><div class="top"><div><div class="title">A指教定投工作台</div><div class="sub" id="marketStatus">正在连接真实行情…</div></div><button class="sync" id="refreshBtn">↻ 更新</button></div><div class="rabbit"><div class="ear e1"></div><div class="ear e2"></div><div class="face"><i class="eye a"></i><i class="eye b"></i><i class="mouth"></i></div></div></header>
+<div id="diagnostics" class="diag-box">
+  <div class="diag-title">行情诊断</div>
+  <div id="diagnosticList"></div>
+</div>
 
 <main id="home" class="page active">
 <section><div class="section-head"><h2>今日定投评分</h2><span class="hint">高分 = 回调更充分</span></div><div id="assetList" class="grid"><div class="card loading">正在拉取 5 年行情并计算评分…</div></div></section>
 <section><div class="section-head"><h2>我的持仓</h2><span class="hint">自动保存在本机</span></div><div class="card" id="holdings"></div></section>
 <section><div class="section-head"><h2>指数走势</h2><span class="hint">近 1 年</span></div><div class="card"><div class="tabs" id="chartTabs"></div><div class="chart-wrap"><canvas id="trendChart"></canvas></div></div></section>
-<section><div class="section-head"><h2>财经资讯</h2><span class="hint">中文财经 · Yahoo国际 · 金十</span></div><div class="card"><div class="tabs"><button class="tab active" data-news="cn">中文财经</button><button class="tab" data-news="yahoo">Yahoo 国际财经</button><button class="tab" data-news="jin10">金十入口</button></div><div id="newsList"><div class="empty loading">正在获取最新资讯…</div></div></div></section>
+<section><div class="section-head"><h2>财经资讯</h2><span class="hint">中文财经 · Yahoo国际 · 金十</span></div><div class="card"><div class="tabs"><button class="tab active" data-news="cn">中文财经</button><button class="tab" data-news="yahoo">Yahoo 国际财经</button><button class="tab" data-news="jin10">金十数据</button></div><div id="newsList"><div class="empty loading">正在获取最新资讯…</div></div></div></section>
 </main>
 
 <main id="calc" class="page">
@@ -36,7 +42,7 @@ section{padding:15px 14px 0}.section-head{display:flex;justify-content:space-bet
 </main>
 
 <main id="about" class="page"><section><div class="card"><div class="panel-title">评分说明</div><div class="why">价格分位 30%：当前价格越接近 5 年低位分越高。RSI 20%：日/周/月 RSI 越偏超卖分越高。均线偏离 20%：价格越低于中长期均线分越高。阶段回撤 20%：距离近一年高点越远分越高。月内价格通道 10%：越靠近近 20 个交易日低位分越高。总分 0—100，仅用于纪律化观察，不是买卖建议。</div></div></section></main>
-<div class="footer-note">数据源：A 股/ETF 主要使用东方财富公开行情接口；纳斯达克综合指数使用 Yahoo Finance 图表接口。财经资讯使用可在静态网页中读取的 RSS/JSONP 方式：中文财经聚合 + Yahoo 国际财经；金十保留官方入口。第三方源若临时不可用，页面会明确提示，不使用模拟新闻。市场有风险，投资需谨慎。</div>
+<div class="footer-note">数据源：A 股/ETF 主要使用东方财富公开行情接口；纳斯达克综合指数使用 Yahoo Finance 图表接口。财经资讯使用可在静态网页中读取的 RSS/JSONP 方式：中文财经来自新华网官方财经/金融 RSS，Yahoo 国际财经使用官方 RSS，金十使用快讯脚本读取；点击标题均直接打开对应原文。第三方源若临时不可用，页面会明确提示，不使用模拟新闻。市场有风险，投资需谨慎。</div>
 </main>
 </div>
 <nav class="nav"><button class="active" data-page="home"><i>⌂</i>工作台</button><button data-scroll="holdings"><i>▣</i>持仓</button><button data-page="calc"><i>↗</i>复利</button><button data-page="about"><i>?</i>说明</button></nav>
@@ -52,9 +58,9 @@ const ASSETS=[
  {id:'metal',name:'有色金属ETF',code:'512400',secid:'1.512400',market:'CN'},
  {id:'bank',name:'银行ETF',code:'512800',secid:'1.512800',market:'CN'}
 ];
-const state={assets:{},news:{cn:[],yahoo:[],jin10:[]},chart:'ixic'};
+const state={assets:{},news:{cn:[],yahoo:[],jin10:[]},chart:'ixic',assetErrors:{}};
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1800)}
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),4200)}
 function clamp(v,a=0,b=100){return Math.max(a,Math.min(b,v))}
 function avg(a){const x=a.filter(Number.isFinite);return x.length?x.reduce((s,v)=>s+v,0)/x.length:NaN}
 function rsi(vals,p=14){if(vals.length<=p)return NaN;let g=0,l=0;for(let i=vals.length-p;i<vals.length;i++){const d=vals[i]-vals[i-1];if(d>0)g+=d;else l-=d}if(l===0)return 100;const rs=(g/p)/(l/p);return 100-100/(1+rs)}
@@ -74,49 +80,240 @@ function computeMonthRank(rows){const last=rows.at(-1);if(!last)return null;cons
 function verdict(s){if(s>=80)return '回调很充分，可重点观察';if(s>=65)return '偏便宜，适合分批关注';if(s>=50)return '中性区域，不追也不怕';if(s>=35)return '略偏贵，定投可放慢';return '相对偏贵，别急着追'}
 function explain(o){const p=o.parts,r=o.raw;const bits=[];if(p.price>70)bits.push('价格在历史区间偏低');else if(p.price<30)bits.push('价格分位偏高');if(p.rsi>70)bits.push('RSI 已明显降温');else if(p.rsi<30)bits.push('短中期动能仍偏热');if(p.ma>65)bits.push('价格低于/接近主要均线');else if(p.ma<35)bits.push('价格仍高于主要均线');if(p.drawdown>65)bits.push('距离阶段高点已有明显回撤');else if(p.drawdown<30)bits.push('离近一年高点不远');if(p.channel>70)bits.push('本月位置靠近低位');return bits.slice(0,3).join('，')+'。'}
 function jsonp(url,timeout=12000){return new Promise((resolve,reject)=>{const cb='__cb'+Date.now()+Math.random().toString(36).slice(2);const s=document.createElement('script');const timer=setTimeout(()=>done(new Error('timeout')),timeout);function done(err,data){clearTimeout(timer);delete window[cb];s.remove();err?reject(err):resolve(data)}window[cb]=d=>done(null,d);s.onerror=()=>done(new Error('load error'));s.src=url+(url.includes('?')?'&':'?')+'cb='+cb;document.head.appendChild(s)})}
-async function fetchEastmoney(a){const beg=new Date();beg.setFullYear(beg.getFullYear()-5);beg.setDate(beg.getDate()-15);const b=beg.toISOString().slice(0,10).replaceAll('-','');const e='20500101';const url=`https://push2his.eastmoney.com/api/qt/stock/kline/get?secid=${a.secid}&fields1=f1,f2,f3,f4,f5,f6&fields2=f51,f52,f53,f54,f55,f56,f57,f58,f59,f60,f61&klt=101&fqt=1&beg=${b}&end=${e}`;let j;try{j=await jsonp(url)}catch(e){const r=await fetch(url);j=await r.json()}if(!j?.data?.klines)throw new Error('无K线');return j.data.klines.map(x=>{const p=x.split(',');return{date:p[0],open:+p[1],close:+p[2],high:+p[3],low:+p[4],pct:+p[8]}}).filter(x=>Number.isFinite(x.close))}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+async function fetchWithTimeout(url,opts={},timeout=12000){
+  const c=new AbortController(),t=setTimeout(()=>c.abort(),timeout);
+  try{return await fetch(url,{...opts,signal:c.signal})}
+  finally{clearTimeout(t)}
+}
+function cacheKey(id){return 'a-dca-market-cache-v2:'+id}
+function saveAssetCache(obj){
+  try{
+    const slim={...obj,rows:(obj.rows||[]).slice(-1300),cachedAt:Date.now()};
+    localStorage.setItem(cacheKey(obj.id),JSON.stringify(slim))
+  }catch{}
+}
+function readAssetCache(a){
+  try{
+    const x=JSON.parse(localStorage.getItem(cacheKey(a.id))||'null');
+    if(!x?.rows?.length||!x?.last)return null;
+    return {...x,...a,fromCache:true}
+  }catch{return null}
+}
+function restoreAssetCache(){
+  ASSETS.forEach(a=>{
+    const c=readAssetCache(a);
+    if(c)state.assets[a.id]=c
+  })
+}
+async function withRetry(fn,attempts=3){
+  let last;
+  for(let i=0;i<attempts;i++){
+    try{return await fn(i)}
+    catch(e){last=e;if(i<attempts-1)await sleep(700+900*i)}
+  }
+  throw last
+}
+
+async function fetchEastmoney(a){
+  const beg=new Date();beg.setFullYear(beg.getFullYear()-5);beg.setDate(beg.getDate()-15);
+  const b=beg.toISOString().slice(0,10).replaceAll('-',''),e='20500101';
+  const url=`https://push2his.eastmoney.com/api/qt/stock/kline/get?secid=${a.secid}&fields1=f1,f2,f3,f4,f5,f6&fields2=f51,f52,f53,f54,f55,f56,f57,f58,f59,f60,f61&klt=101&fqt=1&beg=${b}&end=${e}`;
+  let j;
+  try{j=await jsonp(url,10000)}
+  catch(e1){
+    const r=await fetchWithTimeout(url,{cache:'no-store'},12000);
+    if(!r.ok)throw new Error('Eastmoney '+r.status);
+    j=await r.json()
+  }
+  if(!j?.data?.klines?.length)throw new Error('无K线');
+  const rows=j.data.klines.map(x=>{const p=x.split(',');return{date:p[0],open:+p[1],close:+p[2],high:+p[3],low:+p[4],pct:+p[8]}}).filter(x=>Number.isFinite(x.close));
+  if(rows.length<20)throw new Error('K线数据不足');
+  return rows
+}
+async function fetchYahoo(a){
+  const p1=Math.floor(Date.now()/1000)-86400*365*5-86400*20,p2=Math.floor(Date.now()/1000)+86400;
+  const hosts=['https://query1.finance.yahoo.com','https://query2.finance.yahoo.com'];
+  let lastErr;
+  for(const host of hosts){
+    try{
+      const u=`${host}/v8/finance/chart/${encodeURIComponent(a.code)}?period1=${p1}&period2=${p2}&interval=1d&events=history`;
+      const r=await fetchWithTimeout(u,{cache:'no-store'},12000);
+      if(!r.ok)throw new Error('Yahoo '+r.status);
+      const j=await r.json(),x=j.chart?.result?.[0];
+      if(!x?.timestamp?.length)throw new Error('无行情');
+      const q=x.indicators?.quote?.[0]||{},adj=x.indicators?.adjclose?.[0]?.adjclose||q.close||[];
+      const rows=x.timestamp.map((t,i)=>({date:new Date(t*1000).toISOString().slice(0,10),open:q.open?.[i],close:adj[i],high:q.high?.[i],low:q.low?.[i]})).filter(x=>Number.isFinite(x.close));
+      if(rows.length<20)throw new Error('行情数据不足');
+      return rows
+    }catch(e){lastErr=e}
+  }
+  throw lastErr||new Error('Yahoo 无行情')
+}
 async function fetchYahoo(a){const p1=Math.floor(Date.now()/1000)-86400*365*5-86400*20,p2=Math.floor(Date.now()/1000)+86400;const u=`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(a.code)}?period1=${p1}&period2=${p2}&interval=1d&events=history`;const r=await fetch(u);if(!r.ok)throw new Error('Yahoo '+r.status);const j=await r.json(),x=j.chart?.result?.[0];if(!x)throw new Error('无行情');const q=x.indicators.quote[0],adj=x.indicators.adjclose?.[0]?.adjclose||q.close;return x.timestamp.map((t,i)=>({date:new Date(t*1000).toISOString().slice(0,10),open:q.open[i],close:adj[i],high:q.high[i],low:q.low[i]})).filter(x=>Number.isFinite(x.close))}
 function marketLabel(a,lastDate){const now=new Date(), parts=new Intl.DateTimeFormat('zh-CN',{timeZone:a.market==='US'?'America/New_York':'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(now), get=t=>parts.find(x=>x.type===t)?.value, todayCN=`${get('year')}-${get('month')}-${get('day')}`;const same=lastDate===todayCN;return same?'交易日最新':'最近收盘'}
-async function loadAsset(a){const rows=a.kind==='yahoo'?await fetchYahoo(a):await fetchEastmoney(a);const sc=scoreAt(rows,rows.length-1), rank=computeMonthRank(rows);const last=rows.at(-1), prev=rows.at(-2), pct=Number.isFinite(last.pct)?last.pct:(last.close/prev.close-1)*100;state.assets[a.id]={...a,rows,last,pct,score:sc,rank};return state.assets[a.id]}
-function renderAssets(){const vals=Object.values(state.assets).sort((a,b)=>(b.score?.total||-1)-(a.score?.total||-1));if(!vals.length){$('#assetList').innerHTML='<div class="card">暂时没有可用行情。</div>';return}$('#assetList').innerHTML=vals.map(a=>{const s=a.score, cls=a.pct>0?'up':a.pct<0?'down':'flat', historyDays=a.rows.length, warn=historyDays<1100?`<div class="historywarn">该品种上市/可用历史不足 5 年，当前按 ${historyDays} 个交易日真实历史计算。</div>`:'';return `<article class="card asset"><div class="asset-main"><div class="name">${a.name}<span class="code">${a.code}</span></div><div class="price">${a.last.close.toFixed(a.last.close>100?2:3)} <span class="pct ${cls}">${a.pct>=0?'+':''}${a.pct.toFixed(2)}%</span></div><div class="meta">${marketLabel(a,a.last.date)} · ${a.last.date} · 页面 ${new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})} 更新</div><div class="bar"><span style="width:${s.total.toFixed(0)}%"></span></div><div class="verdict">${verdict(s.total)}</div><div class="why">${explain(s)}</div><div class="chips"><span class="chip">价格 <b>${s.parts.price.toFixed(0)}</b></span><span class="chip">RSI <b>${s.parts.rsi.toFixed(0)}</b></span><span class="chip">均线 <b>${s.parts.ma.toFixed(0)}</b></span><span class="chip">回撤 <b>${s.parts.drawdown.toFixed(0)}</b></span><span class="chip">月通道 <b>${s.parts.channel.toFixed(0)}</b></span></div>${warn}</div><div class="scorebox"><div class="score">${s.total.toFixed(0)}</div><div class="scorelab">今日评分 / 100</div><div class="rank">本月第 ${a.rank?.rank||'-'} 便宜</div></div></article>`}).join('')}
+
+function sourceName(a){return a.kind==='yahoo'?'Yahoo Finance':'东方财富'}
+function explainAssetError(a,e){
+  const raw=String(e?.message||e||'未知错误');
+  let reason=raw;
+  if(/timeout/i.test(raw)) reason='请求超时，数据源在规定时间内没有返回';
+  else if(/Yahoo 429/.test(raw)) reason='Yahoo 接口限流（HTTP 429），请求过于频繁';
+  else if(/Yahoo 403/.test(raw)) reason='Yahoo 拒绝了当前请求（HTTP 403）';
+  else if(/Yahoo 5\d\d/.test(raw)) reason='Yahoo 服务器临时异常（'+raw.match(/Yahoo \d+/)?.[0]+'）';
+  else if(/Failed to fetch|NetworkError|Load failed|fetch/i.test(raw)) reason='浏览器未能完成网络请求，可能是跨域限制、网络波动或数据源临时拒绝访问';
+  else if(/load error/i.test(raw)) reason='第三方行情脚本加载失败，可能被浏览器或数据源拦截';
+  else if(/无K线/.test(raw)) reason='数据源返回了响应，但没有可用 K 线数据';
+  else if(/无行情/.test(raw)) reason='数据源返回了响应，但没有该指数的行情结果';
+  return `${a.name}（${sourceName(a)}）：${reason}`;
+}
+function renderDiagnostics(results){
+  const failed=results.filter(x=>x.status==='rejected').map(x=>x.reason);
+  const box=$('#diagnostics'),list=$('#diagnosticList');
+  if(!failed.length){
+    box.classList.remove('show');
+    list.innerHTML='';
+    return;
+  }
+  box.classList.add('show');
+  list.innerHTML=failed.map(f=>{
+    const a=f.asset;
+    const stale=!!state.assets[a?.id];
+    const msg=f.detail||`${a?.name||'未知品种'}：${String(f.message||f)}`;
+    return `<div class="diag-item"><b>${msg}</b><br>${stale?'已自动切换到该品种上一次成功获取的真实数据。':'当前没有该品种的可用旧数据，所以不会显示虚假行情。'}</div>`;
+  }).join('');
+}
+
+async function loadAsset(a){
+  try{
+    const rows=await withRetry(()=>a.kind==='yahoo'?fetchYahoo(a):fetchEastmoney(a),3);
+    const sc=scoreAt(rows,rows.length-1),rank=computeMonthRank(rows);
+    const last=rows.at(-1),prev=rows.at(-2);
+    const pct=Number.isFinite(last.pct)?last.pct:(last.close/prev.close-1)*100;
+    state.assets[a.id]={...a,rows,last,pct,score:sc,rank,fromCache:false};
+    saveAssetCache(state.assets[a.id]);
+    delete state.assetErrors[a.id];
+    return {asset:state.assets[a.id],recovered:false}
+  }catch(e){
+    const cached=readAssetCache(a);
+    if(cached){
+      state.assets[a.id]=cached;
+      const warn=new Error(explainAssetError(a,e));
+      warn.asset=a;warn.detail=warn.message;warn.recovered=true;warn.original=e;
+      state.assetErrors[a.id]=warn.message;
+      return {asset:cached,recovered:true,warning:warn}
+    }
+    const err=new Error(explainAssetError(a,e));
+    err.asset=a;err.detail=err.message;err.original=e;
+    state.assetErrors[a.id]=err.message;
+    throw err
+  }
+}
+function renderAssets(){const vals=Object.values(state.assets).sort((a,b)=>(b.score?.total||-1)-(a.score?.total||-1));if(!vals.length){$('#assetList').innerHTML='<div class="card">暂时没有可用行情。</div>';return}$('#assetList').innerHTML=vals.map(a=>{const s=a.score, cls=a.pct>0?'up':a.pct<0?'down':'flat', historyDays=a.rows.length, warn=historyDays<1100?`<div class="historywarn">该品种上市/可用历史不足 5 年，当前按 ${historyDays} 个交易日真实历史计算。</div>`:'';return `<article class="card asset"><div class="asset-main"><div class="name">${a.name}<span class="code">${a.code}</span></div><div class="price">${a.last.close.toFixed(a.last.close>100?2:3)} <span class="pct ${cls}">${a.pct>=0?'+':''}${a.pct.toFixed(2)}%</span></div><div class="meta">${marketLabel(a,a.last.date)} · ${a.last.date}${a.fromCache?' · 使用上次成功缓存':''} · 页面 ${new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})} 更新</div><div class="bar"><span style="width:${s.total.toFixed(0)}%"></span></div><div class="verdict">${verdict(s.total)}</div><div class="why">${explain(s)}</div><div class="chips"><span class="chip">价格 <b>${s.parts.price.toFixed(0)}</b></span><span class="chip">RSI <b>${s.parts.rsi.toFixed(0)}</b></span><span class="chip">均线 <b>${s.parts.ma.toFixed(0)}</b></span><span class="chip">回撤 <b>${s.parts.drawdown.toFixed(0)}</b></span><span class="chip">月通道 <b>${s.parts.channel.toFixed(0)}</b></span></div>${warn}</div><div class="scorebox"><div class="score">${s.total.toFixed(0)}</div><div class="scorelab">今日评分 / 100</div><div class="rank">本月第 ${a.rank?.rank||'-'} 便宜</div></div></article>`}).join('')}
 function defaultHoldings(){return Object.fromEntries(ASSETS.filter(x=>!['star50','sh'].includes(x.id)).map(a=>[a.id,{units:0,cost:0}]))}
 function loadHoldings(){try{return {...defaultHoldings(),...JSON.parse(localStorage.getItem('a-dca-holdings')||'{}')}}catch{return defaultHoldings()}}
 function renderHoldings(){const h=loadHoldings(), ids=Object.keys(h);let value=0,costAll=0;const rows=ids.map(id=>{const a=ASSETS.find(x=>x.id===id), q=state.assets[id]?.last?.close||0, v=h[id].units*q,c=h[id].units*h[id].cost;value+=v;costAll+=c;return `<div class="hold-row"><div><b>${a?.name||id}</b><div class="meta">现价 ${q? q.toFixed(q>100?2:3):'--'}</div></div><input inputmode="decimal" data-hold="${id}" data-k="units" value="${h[id].units}" placeholder="份额"><input inputmode="decimal" data-hold="${id}" data-k="cost" value="${h[id].cost}" placeholder="成本价"></div>`}).join('');const pnl=value-costAll;$('#holdings').innerHTML=`<div class="hold-row" style="font-size:10px;color:var(--muted);padding-top:0"><span>品种</span><span>持有份额</span><span>成本价</span></div>${rows}<div class="hold-sum"><span>持仓市值 <strong>¥${value.toLocaleString('zh-CN',{maximumFractionDigits:0})}</strong></span><span class="${pnl>=0?'up':'down'}">浮动 ${pnl>=0?'+':''}¥${pnl.toLocaleString('zh-CN',{maximumFractionDigits:0})}</span></div>`;$$('[data-hold]').forEach(el=>el.addEventListener('change',()=>{const hh=loadHoldings();hh[el.dataset.hold][el.dataset.k]=Math.max(0,+el.value||0);localStorage.setItem('a-dca-holdings',JSON.stringify(hh));renderHoldings()}))}
 function renderChartTabs(){const have=ASSETS.filter(a=>state.assets[a.id]);$('#chartTabs').innerHTML=have.map(a=>`<button class="tab ${a.id===state.chart?'active':''}" data-chart="${a.id}">${a.name.replace('指数','').replace('ETF','')}</button>`).join('');$$('[data-chart]').forEach(b=>b.onclick=()=>{state.chart=b.dataset.chart;renderChartTabs();drawChart()})}
 function drawChart(){const a=state.assets[state.chart];if(!a)return;const c=$('#trendChart'),dpr=window.devicePixelRatio||1,rect=c.getBoundingClientRect();c.width=rect.width*dpr;c.height=rect.height*dpr;const x=c.getContext('2d');x.scale(dpr,dpr);const rows=a.rows.slice(-252), vals=rows.map(r=>r.close),min=Math.min(...vals),max=Math.max(...vals),pad=12,w=rect.width,h=rect.height;x.clearRect(0,0,w,h);x.strokeStyle='#dce8fb';x.lineWidth=1;for(let i=1;i<4;i++){x.beginPath();x.moveTo(0,h*i/4);x.lineTo(w,h*i/4);x.stroke()}x.strokeStyle='#0b66ff';x.lineWidth=2;x.beginPath();vals.forEach((v,i)=>{const px=pad+(w-pad*2)*i/(vals.length-1),py=pad+(h-pad*2)*(1-(v-min)/(max-min||1));i?x.lineTo(px,py):x.moveTo(px,py)});x.stroke();x.fillStyle='#70809f';x.font='10px sans-serif';x.fillText(max.toFixed(max>100?0:2),4,11);x.fillText(min.toFixed(min>100?0:2),4,h-4)}
 const NEWS_FEEDS={
-  cn:'https://news.google.com/rss/search?q=%E8%B4%A2%E7%BB%8F+OR+A%E8%82%A1+OR+ETF+OR+%E9%BB%84%E9%87%91&hl=zh-CN&gl=CN&ceid=CN:zh-Hans',
+  cn:[
+    'http://www.xinhuanet.com/finance/news_finance.xml',
+    'http://www.xinhuanet.com/fortune/news_fortune.xml'
+  ],
   yahoo:'https://tw.stock.yahoo.com/rss?category=intl-markets'
 };
 const NEWS_DIRECT={
-  cn:'https://news.google.com/search?q=%E8%B4%A2%E7%BB%8F%20A%E8%82%A1%20ETF%20%E9%BB%84%E9%87%91&hl=zh-CN',
+  cn:'https://www.news.cn/money/index.html',
   yahoo:'https://tw.stock.yahoo.com/intl-markets/',
-  jin10:'https://www.jin10.com/'
+  jin10:'https://flash.jin10.com/'
 };
-function loadRSSNews(key){return new Promise(resolve=>{
-  const cb='news_cb_'+key+'_'+Date.now(),s=document.createElement('script');let done=false;
-  const finish=()=>{if(done)return;done=true;try{delete window[cb]}catch{};s.remove();resolve()};
+function loadOneRSS(url,key){return new Promise(resolve=>{
+  const cb='news_cb_'+key+'_'+Math.random().toString(36).slice(2)+'_'+Date.now();
+  const s=document.createElement('script');let done=false;
+  const finish=(items=[])=>{if(done)return;done=true;try{delete window[cb]}catch{};s.remove();resolve(items)};
   window[cb]=j=>{try{
-    if(j&&j.status==='ok'){
-      state.news[key]=(j.items||[]).slice(0,12).map(it=>({
-        title:it.title||'未命名资讯',
-        time:it.pubDate||'',
-        url:it.link||NEWS_DIRECT[key],
-        source:key==='yahoo'?'Yahoo 股市':'中文财经'
-      }))
-    }
-  }catch{}finish()};
-  s.src='https://api.rss2json.com/v1/api.json?callback='+cb+'&rss_url='+encodeURIComponent(NEWS_FEEDS[key])+'&_='+Date.now();
-  s.onerror=finish;document.head.appendChild(s);setTimeout(finish,9000)
+    const items=(j&&j.status==='ok'?(j.items||[]):[]).map(it=>({
+      title:it.title||'未命名资讯',
+      time:it.pubDate||'',
+      url:it.link||'',
+      source:key==='yahoo'?'Yahoo 股市':'新华财经'
+    })).filter(x=>/^https?:\/\//i.test(x.url));
+    finish(items)
+  }catch{finish([])}};
+  s.src='https://api.rss2json.com/v1/api.json?callback='+cb+'&rss_url='+encodeURIComponent(url)+'&_='+Date.now();
+  s.onerror=()=>finish([]);document.head.appendChild(s);setTimeout(()=>finish([]),9000)
 })}
-function loadJin10(){state.news.jin10=[
-  {title:'打开金十数据官方快讯',time:'',url:'https://www.jin10.com/',source:'金十数据'},
-  {title:'打开金十快讯页',time:'',url:'https://flash.jin10.com/',source:'金十数据'}
-]}
+async function loadRSSNews(key){
+  const feeds=Array.isArray(NEWS_FEEDS[key])?NEWS_FEEDS[key]:[NEWS_FEEDS[key]];
+  const groups=await Promise.all(feeds.map(u=>loadOneRSS(u,key)));
+  const merged=groups.flat().sort((a,b)=>new Date(b.time)-new Date(a.time));
+  const seen=new Set();
+  state.news[key]=merged.filter(x=>{
+    const k=x.url||x.title;if(seen.has(k))return false;seen.add(k);return true
+  }).slice(0,12)
+}
+function loadJin10(){return new Promise(resolve=>{
+  const old=document.getElementById('jin10-script');if(old)old.remove();
+  const s=document.createElement('script');s.id='jin10-script';
+  s.src='https://www.jin10.com/flash_newest.js?t='+Date.now();
+  s.onload=()=>{try{
+    const arr=window.newest||[];
+    state.news.jin10=arr.slice(0,12).map(x=>({
+      title:(x.data?.content||x.content||'金十快讯').replace(/<[^>]+>/g,''),
+      time:x.time||'',
+      url:x.id?`https://flash.jin10.com/detail/${x.id}`:'https://flash.jin10.com/',
+      source:'金十数据'
+    }))
+  }catch{}resolve()};
+  s.onerror=()=>resolve();
+  document.head.appendChild(s);
+  setTimeout(resolve,8000)
+})}
 function fmtNewsTime(v){if(!v)return '';const d=new Date(String(v).replace(' ','T'));return isNaN(d)?v:d.toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})}
-function renderNews(type='cn'){const n=state.news[type]||[];if(n.length){$('#newsList').innerHTML=n.map(x=>`<div class="news-item"><a class="news-title" target="_blank" rel="noopener" href="${x.url}">${x.title}</a><div class="news-meta">${x.source}${x.time?' · '+fmtNewsTime(x.time):''}</div></div>`).join('');return}const label=type==='cn'?'中文财经':type==='yahoo'?'Yahoo 国际财经':'金十数据';$('#newsList').innerHTML=`<div class="empty">${label}暂未返回数据。<br><a target="_blank" rel="noopener" href="${NEWS_DIRECT[type]}">直接打开来源 →</a></div>`}
+function renderNews(type='cn'){const n=state.news[type]||[];if(n.length){$('#newsList').innerHTML=n.map(x=>`<div class="news-item"><a class="news-title" target="_blank" rel="noopener" href="${x.url}">${x.title}</a><div class="news-meta">${x.source}${x.time?' · '+fmtNewsTime(x.time):''} · 点击标题看原文</div></div>`).join('');return}const label=type==='cn'?'中文财经':type==='yahoo'?'Yahoo 国际财经':'金十数据';$('#newsList').innerHTML=`<div class="empty">${label}暂未返回数据，请稍后点“更新”重试。</div>`}
 function calc(){const p=+$('#principal').value||0,m=+$('#monthly').value||0,annual=(+$('#rate').value||0)/100,rm=Math.pow(1+annual,1/12)-1;$('#calcResults').innerHTML=[10,15,20].map(y=>{const n=y*12,total=p*Math.pow(1+rm,n)+(rm?m*(Math.pow(1+rm,n)-1)/rm:m*n),principal=p+m*n,gain=total-principal;return `<div class="result"><div class="yr">${y} 年</div><div class="money">¥${Math.round(total).toLocaleString()}</div><div class="gain">本金 ¥${Math.round(principal).toLocaleString()}<br>收益 ¥${Math.round(gain).toLocaleString()}</div></div>`}).join('')}
-async function refresh(){const btn=$('#refreshBtn');btn.disabled=true;btn.textContent='更新中…';$('#marketStatus').textContent='正在获取真实最新行情并重算评分…';const results=await Promise.allSettled(ASSETS.map(loadAsset));renderAssets();renderHoldings();renderChartTabs();drawChart();loadJin10();await Promise.allSettled([loadRSSNews('cn'),loadRSSNews('yahoo')]);renderNews(document.querySelector('[data-news].active')?.dataset.news||'cn');const ok=results.filter(x=>x.status==='fulfilled').length;$('#marketStatus').textContent=`已更新 ${ok}/${ASSETS.length} 个品种 · ${new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})}`;btn.disabled=false;btn.textContent='↻ 更新';if(ok<ASSETS.length)toast('部分数据源暂不可达，已保留可用数据')}
-$('#refreshBtn').onclick=refresh;$$('[data-news]').forEach(b=>b.onclick=()=>{$$('[data-news]').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderNews(b.dataset.news)});$$('.nav button').forEach(b=>b.onclick=()=>{if(b.dataset.scroll){$$('.nav button').forEach(x=>x.classList.remove('active'));document.querySelector('[data-page="home"]').classList.add('active');$$('.page').forEach(x=>x.classList.remove('active'));$('#home').classList.add('active');setTimeout(()=>$('#holdings').scrollIntoView({behavior:'smooth',block:'center'}),40);return}$$('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');$$('.page').forEach(x=>x.classList.remove('active'));$('#'+b.dataset.page).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});if(b.dataset.page==='calc')calc()});['principal','monthly','rate'].forEach(id=>$('#'+id).addEventListener('input',calc));window.addEventListener('resize',drawChart);calc();renderHoldings();refresh();setInterval(refresh,60000);if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+async function refresh(){
+  const btn=$('#refreshBtn');
+  btn.disabled=true;btn.textContent='更新中…';
+  $('#marketStatus').textContent='正在获取真实最新行情并重算评分…';
+
+  // 两个一组错峰请求，降低 Yahoo / 东方财富限流和 Safari 瞬时并发失败
+  const settled=[];
+  for(let i=0;i<ASSETS.length;i+=2){
+    const group=ASSETS.slice(i,i+2);
+    const r=await Promise.allSettled(group.map(loadAsset));
+    settled.push(...r);
+    if(i+2<ASSETS.length)await sleep(350);
+  }
+
+  renderAssets();renderHoldings();renderChartTabs();drawChart();
+
+  await Promise.allSettled([loadRSSNews('cn'),loadRSSNews('yahoo'),loadJin10()]);
+  renderNews(document.querySelector('[data-news].active')?.dataset.news||'cn');
+
+  const hardFailed=settled.filter(x=>x.status==='rejected');
+  const recovered=settled.filter(x=>x.status==='fulfilled'&&x.value?.recovered);
+  const fresh=settled.filter(x=>x.status==='fulfilled'&&!x.value?.recovered).length;
+
+  if(hardFailed.length){
+    renderDiagnostics(hardFailed);
+    const names=hardFailed.map(x=>x.reason?.asset?.name||'未知品种').join('、');
+    $('#marketStatus').textContent=`可用 ${ASSETS.length-hardFailed.length}/${ASSETS.length} · 无可用数据：${names} · ${new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})}`;
+    toast(`${hardFailed.length} 个品种连续重试后仍失败，详情见“行情诊断”`);
+  }else{
+    // 全部都有可用真实数据：即使某一路临时失败，只要缓存接管就不弹错误
+    $('#diagnostics').classList.remove('show');
+    $('#diagnosticList').innerHTML='';
+    if(recovered.length){
+      const names=recovered.map(x=>x.value.warning?.asset?.name).filter(Boolean).join('、');
+      $('#marketStatus').textContent=`8/8 个品种可用 · ${fresh} 个已刷新 · ${recovered.length} 个自动使用上次成功数据${names?'（'+names+'）':''} · ${new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})}`;
+    }else{
+      $('#marketStatus').textContent=`已更新 ${ASSETS.length}/${ASSETS.length} 个品种 · ${new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})}`;
+    }
+  }
+  btn.disabled=false;btn.textContent='↻ 更新';
+}
+$('#refreshBtn').onclick=refresh;$$('[data-news]').forEach(b=>b.onclick=()=>{$$('[data-news]').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderNews(b.dataset.news)});$$('.nav button').forEach(b=>b.onclick=()=>{if(b.dataset.scroll){$$('.nav button').forEach(x=>x.classList.remove('active'));document.querySelector('[data-page="home"]').classList.add('active');$$('.page').forEach(x=>x.classList.remove('active'));$('#home').classList.add('active');setTimeout(()=>$('#holdings').scrollIntoView({behavior:'smooth',block:'center'}),40);return}$$('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');$$('.page').forEach(x=>x.classList.remove('active'));$('#'+b.dataset.page).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});if(b.dataset.page==='calc')calc()});['principal','monthly','rate'].forEach(id=>$('#'+id).addEventListener('input',calc));window.addEventListener('resize',drawChart);calc();restoreAssetCache();renderAssets();renderHoldings();renderChartTabs();drawChart();refresh();setInterval(refresh,60000);if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script>
 </body></html>
