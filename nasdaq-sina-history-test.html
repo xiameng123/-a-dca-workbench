@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1466ff">
+<title>纳指历史数据测试 · 新浪</title>
+<style>
+:root{--blue:#1466ff;--bg:#f4f7ff;--card:#fff;--ink:#14213d;--muted:#77849b;--line:#e4ebf7}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink)}
+.wrap{max-width:680px;margin:auto;padding:0 14px 36px}.hero{margin:0 -14px 18px;padding:calc(20px + env(safe-area-inset-top)) 18px 24px;background:linear-gradient(145deg,#1466ff,#67a2ff);color:#fff;border-radius:0 0 28px 28px}
+h1{font-size:22px;margin:0}.sub{font-size:12px;line-height:1.65;opacity:.95;margin-top:7px}
+.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:0 8px 22px rgba(50,90,160,.06);margin-bottom:14px}
+.status{padding:12px;border-radius:14px;background:#eef4ff;color:#3f67a4;font-size:12px;line-height:1.65}.ok{background:#edf9f2;color:#277c51}.bad{background:#fff0f0;color:#a74747}
+.row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line)}.row:first-child{border-top:0}.k{font-size:12px;color:var(--muted)}.v{font-size:12px;font-weight:800;text-align:right}
+button{border:0;border-radius:999px;background:var(--blue);color:#fff;padding:10px 14px;font-weight:800}.actions{display:flex;justify-content:flex-end;margin:10px 0 14px}
+canvas{width:100%;height:240px;display:block}.note{font-size:11px;color:#7e8ba1;line-height:1.7;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+  <h1>纳指历史数据测试 · 新浪</h1>
+  <div class="sub">只测试纳斯达克综合指数历史日 K。页面会自动尝试多种新浪接口/代码写法，哪个成功就用哪个。</div>
+</header>
+
+<div class="actions"><button id="refresh">↻ 重新测试</button></div>
+
+<section class="card">
+  <div id="status" class="status">正在测试新浪历史接口…</div>
+</section>
+
+<section class="card">
+  <div class="row"><div class="k">成功接口</div><div id="endpoint" class="v">--</div></div>
+  <div class="row"><div class="k">返回交易日</div><div id="count" class="v">--</div></div>
+  <div class="row"><div class="k">最早日期</div><div id="firstDate" class="v">--</div></div>
+  <div class="row"><div class="k">最新日期</div><div id="lastDate" class="v">--</div></div>
+  <div class="row"><div class="k">最低收盘</div><div id="low" class="v">--</div></div>
+  <div class="row"><div class="k">最高收盘</div><div id="high" class="v">--</div></div>
+</section>
+
+<section class="card">
+  <div class="note">历史收盘走势</div>
+  <canvas id="chart"></canvas>
+  <div class="note">如果能返回 1000 个以上有效交易日，就足以支持你工作台里的 5 年价格分位、RSI、均线、阶段回撤和历史买卖点。</div>
+</section>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+
+function parseRows(data){
+  if(!data) return [];
+  const arr=Array.isArray(data)?data:(data.result?.data||data.data||[]);
+  if(!Array.isArray(arr)) return [];
+  return arr.map(r=>{
+    if(Array.isArray(r)){
+      return {date:r[0],open:+r[1],high:+r[2],low:+r[3],close:+r[4]};
+    }
+    return {
+      date:r.date||r.day||r.d,
+      open:+(r.open??r.o),
+      high:+(r.high??r.h),
+      low:+(r.low??r.l),
+      close:+(r.close??r.c)
+    };
+  }).filter(x=>x.date && Number.isFinite(x.close));
+}
+
+function tryScript(url,label){
+  return new Promise(resolve=>{
+    const script=document.createElement('script');
+    let done=false;
+    const finish=(rows=[])=>{
+      if(done)return;done=true;
+      try{script.remove()}catch{}
+      resolve({label,rows});
+    };
+
+    const beforeKeys=new Set(Object.keys(window));
+    const prevData=window.data;
+
+    script.src=url+'&_='+Date.now();
+    script.onload=()=>{
+      setTimeout(()=>{
+        let candidates=[];
+        try{
+          if(window.data && window.data!==prevData) candidates.push(window.data);
+        }catch{}
+        try{
+          for(const k of Object.keys(window)){
+            if(beforeKeys.has(k)) continue;
+            const v=window[k];
+            if(Array.isArray(v) || (v && typeof v==='object')) candidates.push(v);
+          }
+        }catch{}
+        for(const c of candidates){
+          const rows=parseRows(c);
+          if(rows.length) return finish(rows);
+        }
+        finish([]);
+      },250);
+    };
+    script.onerror=()=>finish([]);
+    document.head.appendChild(script);
+    setTimeout(()=>finish([]),9000);
+  });
+}
+
+async function run(){
+  $('#status').className='status';
+  $('#status').textContent='正在依次尝试新浪历史接口…';
+  ['endpoint','count','firstDate','lastDate','low','high'].forEach(id=>$('#'+id).textContent='--');
+
+  const tests=[
+    {
+      label:'新浪 stock.finance · .IXIC',
+      url:'https://stock.finance.sina.com.cn/usstock/api/jsonp.php/data/US_MinKService.getDailyK?symbol=.IXIC&num=1500'
+    },
+    {
+      label:'新浪 stock.finance · IXIC',
+      url:'https://stock.finance.sina.com.cn/usstock/api/jsonp.php/data/US_MinKService.getDailyK?symbol=IXIC&num=1500'
+    },
+    {
+      label:'新浪 quotes.sina.cn · ixic',
+      url:'https://quotes.sina.cn/usstock/api/jsonp.php/data/US_MinKService.getDailyK?symbol=ixic&scale=240&datalen=1500'
+    },
+    {
+      label:'新浪 quotes.sina.cn · .IXIC',
+      url:'https://quotes.sina.cn/usstock/api/jsonp.php/data/US_MinKService.getDailyK?symbol=.IXIC&scale=240&datalen=1500'
+    }
+  ];
+
+  for(const t of tests){
+    $('#status').textContent='正在测试：'+t.label;
+    const res=await tryScript(t.url,t.label);
+    if(res.rows.length){
+      render(res.label,res.rows);
+      return;
+    }
+  }
+
+  $('#status').className='status bad';
+  $('#status').textContent='新浪历史接口测试失败：4 种接口/代码写法都没有在 Safari / GitHub Pages 中返回可解析的日 K 数据。';
+}
+
+function render(label,rows){
+  rows=rows.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  const vals=rows.map(x=>x.close);
+  $('#status').className='status ok';
+  $('#status').textContent=`新浪历史数据成功：返回 ${rows.length} 个有效交易日。`;
+  $('#endpoint').textContent=label;
+  $('#count').textContent=rows.length+' 个';
+  $('#firstDate').textContent=rows[0].date;
+  $('#lastDate').textContent=rows.at(-1).date;
+  $('#low').textContent=Math.min(...vals).toFixed(2);
+  $('#high').textContent=Math.max(...vals).toFixed(2);
+  draw(rows);
+}
+
+function draw(rows){
+  const c=$('#chart'),rect=c.getBoundingClientRect(),dpr=devicePixelRatio||1,w=rect.width,h=240;
+  c.width=w*dpr;c.height=h*dpr;
+  const ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
+  const vals=rows.map(x=>x.close),lo=Math.min(...vals),hi=Math.max(...vals),pad=16;
+  const x=i=>pad+(w-pad*2)*i/(rows.length-1), y=v=>pad+(h-pad*2)*(1-(v-lo)/(hi-lo||1));
+  ctx.clearRect(0,0,w,h);ctx.strokeStyle='#e6edf7';ctx.lineWidth=1;
+  for(let i=1;i<4;i++){ctx.beginPath();ctx.moveTo(0,h*i/4);ctx.lineTo(w,h*i/4);ctx.stroke()}
+  ctx.beginPath();rows.forEach((r,i)=>i?ctx.lineTo(x(i),y(r.close)):ctx.moveTo(x(i),y(r.close)));
+  ctx.strokeStyle='#1466ff';ctx.lineWidth=2;ctx.stroke();
+}
+
+$('#refresh').onclick=run;
+run();
+</script>
+</body>
+</html>
